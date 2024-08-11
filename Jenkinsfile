@@ -10,7 +10,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git url: 'https://github.com/your-repo.git', branch: 'main'  // Replace with your repo URL and branch
+                git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'  // Replace with your repo URL and branch
             }
         }
 
