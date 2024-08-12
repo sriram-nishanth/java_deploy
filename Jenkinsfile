@@ -11,7 +11,13 @@ pipeline {
     stages {
         stage('Clone Repository') {
             steps {
-                git 'https://github.com/dineshkrish1607/java_deploy.git'
+                script {
+                    try {
+                        git branch: 'main', url: 'https://github.com/dineshkrish1607/java_deploy.git'
+                    } catch (Exception e) {
+                        error "Failed to clone the repository: ${e.message}"
+                    }
+                }
             }
         }
         stage('Build with Maven') {
