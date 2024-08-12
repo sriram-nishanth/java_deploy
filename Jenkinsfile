@@ -2,52 +2,45 @@ pipeline {
     agent any
 
     environment {
-        DOCKER_IMAGE = 'my-tomcat-app:latest'           // Docker image name
-        CONTAINER_NAME = 'tomcat-container'             // Docker container name
-        INSTANCE_2_IP = '3.110.196.106'               // Replace with your Instance 2 IP
+        DOCKER_IMAGE = 'iamdineshk/my-java-app'
+        DOCKER_TAG = 'latest'
+        SSH_CREDENTIALS_ID = 'Slave1'
+        DOCKER_HOST = 'http://13.201.85.186' // Adjust with your Docker instance IP and port if needed
     }
 
     stages {
-        stage('Checkout') {
+        stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'  // Replace with your repo URL and branch
+                git 'https://github.com/dineshkrish1607/java_deploy.git'
             }
         }
-
-        stage('Build') {
+        stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'  // Adjust for your build tool if needed
+                sh 'mvn clean package'
             }
         }
-
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t ${DOCKER_IMAGE} .'
-            }
-        }
-
-        stage('Deploy') {
-            steps {
                 script {
-                    sh 'docker stop ${CONTAINER_NAME} || true'
-                    sh 'docker rm ${CONTAINER_NAME} || true'
-                    sh 'docker run -d --name ${CONTAINER_NAME} -p 8080:8080 ${DOCKER_IMAGE}'
+                    docker.withServer("${env.DOCKER_HOST}", "${env.SSH_CREDENTIALS_ID}") {
+                        docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}", ".").push()
+                    }
                 }
             }
         }
-
-        stage('Test') {
+        stage('Deploy to Docker') {
             steps {
-                script {
-                    sh 'curl -I http://3.110.196.106:8080/sample'  // Replace with your app's context path
+                sshagent (credentials: ['Slave1']) {
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ec2-user@docker-instance-ip << EOF
+                    docker pull ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
+                    docker stop my-java-app-container || true
+                    docker rm my-java-app-container || true
+                    docker run -d --name my-java-app-container -p 8080:8080 ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
+                    EOF
+                    """
                 }
             }
-        }
-    }
-
-    post {
-        always {
-            sh 'docker rmi ${DOCKER_IMAGE} || true'
         }
     }
 }
