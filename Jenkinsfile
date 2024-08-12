@@ -41,7 +41,7 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
-                        docker run -d -p 8081:8080 ${env.DOCKER_IMAGE}
+                        docker run -d -p 8082:8080 ${env.DOCKER_IMAGE}
                     '
                     """
                 }
