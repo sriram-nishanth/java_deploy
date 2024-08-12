@@ -39,7 +39,7 @@ pipeline {
                 echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh '''
-                    ssh -t -o StrictHostKeyChecking=no user@${REMOTE_HOST} << 'EOF'
+                    ssh -o StrictHostKeyChecking=no user@${REMOTE_HOST} << 'EOF'
                         echo "Pulling Docker image on remote server..."
                         docker pull my-sample-app:latest
                         echo "Running Docker container on remote server..."
