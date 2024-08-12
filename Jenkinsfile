@@ -4,6 +4,7 @@ pipeline {
     environment {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
         REMOTE_HOST = '13.201.85.186'
+        DOCKER_IMAGE = 'my-app:latest'
     }
 
     stages {
@@ -29,7 +30,18 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    docker.build('my-app:latest')
+                    docker.build(env.DOCKER_IMAGE)
+                }
+            }
+        }
+
+        stage('Push Docker Image') { // New stage to push the image to Docker Hub or another registry
+            steps {
+                echo 'Pushing Docker image to registry...'
+                script {
+                    docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials-id') { 
+                        docker.image(env.DOCKER_IMAGE).push()
+                    }
                 }
             }
         }
@@ -38,14 +50,12 @@ pipeline {
             steps {
                 echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
-                    sh '''
-                    ssh -t -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} << 'EOF'
-                        echo "Pulling Docker image on remote server..."
-                        docker pull my-app:latest
-                        echo "Running Docker container on remote server..."
-                        docker run -d -p 8080:8080 my-app:latest
-                    EOF
-                    '''
+                    sh """
+                    ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
+                        docker pull ${env.DOCKER_IMAGE} &&
+                        docker run -d -p 8081:8080 ${env.DOCKER_IMAGE}
+                    '
+                    """
                 }
             }
         }
