@@ -1,10 +1,6 @@
 pipeline {
     agent any  // Runs the pipeline on any available agent
 
-    tools {
-        maven 'Maven 3.9.8' // Name of the Maven installation in Jenkins
-    }
-
     environment {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'  // Jenkins SSH credentials ID
         REMOTE_HOST = '13.201.85.186'  // Remote server address (IP or hostname)
