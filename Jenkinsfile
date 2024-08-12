@@ -1,9 +1,9 @@
 pipeline {
-    agent any  // Runs the pipeline on any available agent
+    agent any
 
     environment {
-        REMOTE_SSH_CREDENTIALS_ID = 'Slave1'  // Jenkins SSH credentials ID
-        REMOTE_HOST = '13.201.85.186'  // Remote server address (IP or hostname)
+        REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
+        REMOTE_HOST = '13.201.85.186'
     }
 
     stages {
@@ -16,8 +16,12 @@ pipeline {
 
         stage('Build') {
             steps {
-                echo 'Building the project with Maven...'
-                sh 'mvn clean package'
+                echo 'Building the project with Maven inside Docker...'
+                script {
+                    docker.image('my-sample-app:latest').inside {
+                        sh 'mvn clean package'
+                    }
+                }
             }
         }
 
