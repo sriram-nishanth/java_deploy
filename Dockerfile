@@ -5,7 +5,7 @@ FROM tomcat:9.0.65-jdk11-openjdk
 COPY target/webapp-tom.war /usr/local/tomcat/webapps/
 
 # Expose port 8080
-EXPOSE 8080
+EXPOSE 8081
 
 # Run Tomcat
 CMD ["catalina.sh", "run"]
