@@ -22,8 +22,10 @@ pipeline {
         }
         stage('Build with Maven') {
             steps {
-                docker.image('maven:3.8.5-jdk-17').inside {
-                    sh 'mvn clean package'
+                script {
+                    docker.image('maven:3.8.5-jdk-17').inside {
+                        sh 'mvn clean package'
+                    }
                 }
             }
         }
