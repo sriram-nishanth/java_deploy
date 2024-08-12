@@ -1,54 +1,45 @@
 pipeline {
-    agent any
+    agent any  // This defines where the pipeline will run, using any available agent
 
     environment {
-        DOCKER_IMAGE = 'iamdineshk/my-java-app'
-        DOCKER_TAG = 'latest'
-        SSH_CREDENTIALS_ID = 'Slave1'
-        DOCKER_HOST = 'tcp://13.201.85.186:2376' // Adjust with your Docker instance IP and port if needed
+        REMOTE_SSH_CREDENTIALS_ID = 'Slave1'  // Jenkins SSH credentials ID
+        REMOTE_HOST = 'http://13.201.85.186'  // Replace with your remote server address
     }
 
     stages {
-        stage('Clone Repository') {
+        stage('Checkout') {
             steps {
-                script {
-                    try {
-                        git branch: 'main', url: 'https://github.com/dineshkrish1607/java_deploy.git'
-                    } catch (Exception e) {
-                        error "Failed to clone the repository: ${e.message}"
-                    }
-                }
+                // Checkout the code from the GitHub repository
+                git 'https://github.com/dineshkrish1607/java_deploy.git'
             }
         }
-        stage('Build with Maven') {
+
+        stage('Build') {
             steps {
-                script {
-                    docker.image('maven:3.9.8-jdk-17').inside {
-                        sh 'mvn clean package'
-                    }
-                }
+                // Run Maven to build the project
+                sh 'mvn clean package'
             }
         }
+
         stage('Build Docker Image') {
             steps {
+                // Build the Docker image using the Dockerfile
                 script {
-                    docker.withRegistry("${env.DOCKER_HOST}", "${env.SSH_CREDENTIALS_ID}") {
-                        docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}", ".").push()
-                    }
+                    docker.build('my-sample-app:latest')
                 }
             }
         }
-        stage('Deploy to Docker') {
+
+        stage('Deploy to Remote Server') {
             steps {
-                sshagent (credentials: ['Slave1']) {
-                    sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@docker-instance-ip << EOF
-                    docker pull ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
-                    docker stop my-java-app-container || true
-                    docker rm my-java-app-container || true
-                    docker run -d --name my-java-app-container -p 8080:8080 ${env.DOCKER_IMAGE}:${env.DOCKER_TAG}
+                // Deploy the Docker image to the remote server using SSH
+                sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
+                    sh '''
+                    ssh -o StrictHostKeyChecking=no user@${REMOTE_HOST} << 'EOF'
+                        docker pull my-sample-app:latest
+                        docker run -d -p 8080:8080 my-sample-app:latest
                     EOF
-                    """
+                    '''
                 }
             }
         }
