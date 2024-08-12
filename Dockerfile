@@ -1,11 +1,11 @@
-# Use the official Tomcat image as the base image
-FROM tomcat:latest
+# Use an official Tomcat runtime as a parent image
+FROM tomcat:9.0.65-jdk11-openjdk
 
-# Remove default apps (optional)
-RUN rm -rf /usr/local/tomcat/webapps/*
-
-# Copy your application .war file to the webapps directory
+# Copy the WAR file to the webapps directory of Tomcat
 COPY target/sample.war /usr/local/tomcat/webapps/
 
 # Expose port 8080
 EXPOSE 8080
+
+# Run Tomcat
+CMD ["catalina.sh", "run"]
