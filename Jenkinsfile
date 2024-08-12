@@ -35,24 +35,13 @@ pipeline {
             }
         }
 
-        stage('Push Docker Image') { // New stage to push the image to Docker Hub or another registry
-            steps {
-                echo 'Pushing Docker image to registry...'
-                script {
-                    docker.withRegistry('https://index.docker.io/v1/', 'docker-credentials-id') { 
-                        docker.image(env.DOCKER_IMAGE).push()
-                    }
-                }
-            }
-        }
-
         stage('Deploy to Remote Server') {
             steps {
                 echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
-                        docker pull ${env.DOCKER_IMAGE} &&
+                        docker load -i /path/to/my-app.tar &&  # Load the image if saved as a tar file
                         docker run -d -p 8081:8080 ${env.DOCKER_IMAGE}
                     '
                     """
