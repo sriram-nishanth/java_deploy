@@ -41,7 +41,7 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
-                        docker load -i /home/ubuntu/my-app.tar &&  # Load the image if saved as a tar file
+                        docker load -i /home/ubuntu/myfolder/my-app.tar &&  # Load the image if saved as a tar file
                         docker run -d -p 8081:8080 ${env.DOCKER_IMAGE}
                     '
                     """
