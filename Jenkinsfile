@@ -29,7 +29,7 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    docker.build('my-sample-app:latest')
+                    docker.build('my-app:latest')
                 }
             }
         }
@@ -41,9 +41,9 @@ pipeline {
                     sh '''
                     ssh -t -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} << 'EOF'
                         echo "Pulling Docker image on remote server..."
-                        docker pull my-sample-app:latest
+                        docker pull my-app:latest
                         echo "Running Docker container on remote server..."
-                        docker run -d -p 8080:8080 my-sample-app:latest
+                        docker run -d -p 8080:8080 my-app:latest
                     EOF
                     '''
                 }
