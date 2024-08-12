@@ -1,16 +1,16 @@
 pipeline {
-    agent any  // This defines where the pipeline will run, using any available agent
+    agent any
 
     environment {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'  // Jenkins SSH credentials ID
-        REMOTE_HOST = 'http://13.201.85.186'  // Replace with your remote server address
+        REMOTE_HOST = '13.201.85.186'  // Replace with your remote server address
     }
 
     stages {
         stage('Checkout') {
             steps {
                 // Checkout the code from the GitHub repository
-                git 'https://github.com/dineshkrish1607/java_deploy.git'
+                git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'
             }
         }
 
