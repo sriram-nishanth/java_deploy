@@ -1,9 +1,9 @@
 pipeline {
-    agent any
+    agent any  // Runs the pipeline on any available agent
 
     environment {
-        REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
-        REMOTE_HOST = '13.201.85.186'
+        REMOTE_SSH_CREDENTIALS_ID = 'Slave1'  // Jenkins SSH credentials ID
+        REMOTE_HOST = '13.201.85.186'  // Remote server address (IP or hostname)
     }
 
     stages {
@@ -11,16 +11,6 @@ pipeline {
             steps {
                 echo 'Checking out code from GitHub...'
                 git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'
-            }
-        }
-
-        stage('Check Maven Installation') {
-            steps {
-                echo 'Checking Maven installation...'
-                sh '''
-                which mvn
-                mvn -v
-                '''
             }
         }
 
