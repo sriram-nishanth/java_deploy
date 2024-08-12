@@ -5,8 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'iamdineshk/my-java-app'
         DOCKER_TAG = 'latest'
         SSH_CREDENTIALS_ID = 'Slave1'
-        DOCKER_HOST = 'http://13.201.85.186'
-        MAVEN_HOME = tool name: 'Maven 3.9.8', type: 'maven'
+        DOCKER_HOST = 'http://13.201.85.186' // Adjust with your Docker instance IP and port if needed
     }
 
     stages {
@@ -22,12 +21,8 @@ pipeline {
             }
         }
         stage('Build with Maven') {
-            steps {
-                script {
-                    withEnv(["PATH+MAVEN=${env.MAVEN_HOME}/bin"]) {
-                        sh 'mvn clean package'
-                    }
-                }
+            docker.image('maven:3.8.5-jdk-17').inside {
+                sh 'mvn clean package'
             }
         }
         stage('Build Docker Image') {
