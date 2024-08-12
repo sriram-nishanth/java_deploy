@@ -5,7 +5,7 @@ pipeline {
         DOCKER_IMAGE = 'iamdineshk/my-java-app'
         DOCKER_TAG = 'latest'
         SSH_CREDENTIALS_ID = 'Slave1'
-        DOCKER_HOST = 'http://13.201.85.186' // Adjust with your Docker instance IP and port if needed
+        DOCKER_HOST = 'tcp://13.201.85.186:2376' // Adjust with your Docker instance IP and port if needed
     }
 
     stages {
