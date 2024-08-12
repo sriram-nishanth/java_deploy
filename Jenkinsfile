@@ -32,7 +32,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withServer("${env.DOCKER_HOST}", "${env.SSH_CREDENTIALS_ID}") {
+                    docker.withRegistry("${env.DOCKER_HOST}", "${env.SSH_CREDENTIALS_ID}") {
                         docker.build("${env.DOCKER_IMAGE}:${env.DOCKER_TAG}", ".").push()
                     }
                 }
