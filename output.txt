@@ -1,0 +1,202 @@
+Started by user Dinesh
+Obtained Jenkinsfile from git https://github.com/dineshkrish1607/java_deploy.git
+[Pipeline] Start of Pipeline
+[Pipeline] node
+Running on slave docker in /home/ubuntu/jenfolder/workspace/Java Deploy
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Declarative: Checkout SCM)
+[Pipeline] checkout
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Fetching changes from the remote Git repository
+Checking out Revision 8c50e0c474fb831de5e09e84ceb931765c88b96a (refs/remotes/origin/main)
+Commit message: "Update Jenkinsfile"
+ > /usr/bin/git rev-parse --resolve-git-dir /home/ubuntu/jenfolder/workspace/Java Deploy/.git # timeout=10
+ > /usr/bin/git config remote.origin.url https://github.com/dineshkrish1607/java_deploy.git # timeout=10
+Fetching upstream changes from https://github.com/dineshkrish1607/java_deploy.git
+ > /usr/bin/git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+ > /usr/bin/git fetch --tags --force --progress -- https://github.com/dineshkrish1607/java_deploy.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 8c50e0c474fb831de5e09e84ceb931765c88b96a # timeout=10
+ > /usr/bin/git rev-list --no-walk 8c50e0c474fb831de5e09e84ceb931765c88b96a # timeout=10
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] stage
+[Pipeline] { (Checkout)
+[Pipeline] echo
+Checking out code from GitHub...
+[Pipeline] git
+Selected Git installation does not exist. Using Default
+The recommended git tool is: NONE
+No credentials specified
+Fetching changes from the remote Git repository
+Checking out Revision 8c50e0c474fb831de5e09e84ceb931765c88b96a (refs/remotes/origin/main)
+Commit message: "Update Jenkinsfile"
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build)
+[Pipeline] echo
+Building the project with Maven inside Docker...
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
+ > /usr/bin/git rev-parse --resolve-git-dir /home/ubuntu/jenfolder/workspace/Java Deploy/.git # timeout=10
+ > /usr/bin/git config remote.origin.url https://github.com/dineshkrish1607/java_deploy.git # timeout=10
+Fetching upstream changes from https://github.com/dineshkrish1607/java_deploy.git
+ > /usr/bin/git --version # timeout=10
+ > git --version # 'git version 2.34.1'
+ > /usr/bin/git fetch --tags --force --progress -- https://github.com/dineshkrish1607/java_deploy.git +refs/heads/*:refs/remotes/origin/* # timeout=10
+ > /usr/bin/git rev-parse refs/remotes/origin/main^{commit} # timeout=10
+ > /usr/bin/git config core.sparsecheckout # timeout=10
+ > /usr/bin/git checkout -f 8c50e0c474fb831de5e09e84ceb931765c88b96a # timeout=10
+ > /usr/bin/git branch -a -v --no-abbrev # timeout=10
+ > /usr/bin/git branch -D main # timeout=10
+ > /usr/bin/git checkout -b main 8c50e0c474fb831de5e09e84ceb931765c88b96a # timeout=10
++ docker inspect -f . maven:3.8.3-openjdk-17
+.
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] withDockerContainer
+slave docker does not seem to be running inside a container
+$ docker run -t -d -u 1000:1000 -w "/home/ubuntu/jenfolder/workspace/Java Deploy" -v "/home/ubuntu/jenfolder/workspace/Java Deploy:/home/ubuntu/jenfolder/workspace/Java Deploy:rw,z" -v "/home/ubuntu/jenfolder/workspace/Java Deploy@tmp:/home/ubuntu/jenfolder/workspace/Java Deploy@tmp:rw,z" -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** -e ******** maven:3.8.3-openjdk-17 cat
+$ docker top a5595691995bc303a36b8634db6f66e222ef4fc561fca220eef24c6b569f0ac0 -eo pid,comm
+[Pipeline] {
+[Pipeline] sh
++ mvn clean package
+[INFO] Scanning for projects...
+[INFO] 
+[INFO] -----------------------< webapp-tom:webapp-tom >------------------------
+[INFO] Building webapp-tom Maven Webapp webapp-tom
+[INFO] --------------------------------[ war ]---------------------------------
+[INFO] 
+[INFO] --- maven-clean-plugin:3.1.0:clean (default-clean) @ webapp-tom ---
+[INFO] Deleting /home/ubuntu/jenfolder/workspace/Java Deploy/target
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:resources (default-resources) @ webapp-tom ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/ubuntu/jenfolder/workspace/Java Deploy/src/main/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:compile (default-compile) @ webapp-tom ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-resources-plugin:3.0.2:testResources (default-testResources) @ webapp-tom ---
+[INFO] Using 'UTF-8' encoding to copy filtered resources.
+[INFO] skip non existing resourceDirectory /home/ubuntu/jenfolder/workspace/Java Deploy/src/test/resources
+[INFO] 
+[INFO] --- maven-compiler-plugin:3.8.0:testCompile (default-testCompile) @ webapp-tom ---
+[INFO] No sources to compile
+[INFO] 
+[INFO] --- maven-surefire-plugin:2.22.1:test (default-test) @ webapp-tom ---
+[INFO] No tests to run.
+[INFO] 
+[INFO] --- maven-war-plugin:3.2.2:war (default-war) @ webapp-tom ---
+[INFO] Packaging webapp
+[INFO] Assembling webapp [webapp-tom] in [/home/ubuntu/jenfolder/workspace/Java Deploy/target/webapp-tom]
+[INFO] Processing war project
+[INFO] Copying webapp resources [/home/ubuntu/jenfolder/workspace/Java Deploy/src/main/webapp]
+[INFO] Webapp assembled in [38 msecs]
+[INFO] Building war: /home/ubuntu/jenfolder/workspace/Java Deploy/target/webapp-tom.war
+[INFO] ------------------------------------------------------------------------
+[INFO] BUILD SUCCESS
+[INFO] ------------------------------------------------------------------------
+[INFO] Total time:  2.927 s
+[INFO] Finished at: 2024-08-12T19:21:11Z
+[INFO] ------------------------------------------------------------------------
+[Pipeline] }
+$ docker stop --time=1 a5595691995bc303a36b8634db6f66e222ef4fc561fca220eef24c6b569f0ac0
+$ docker rm -f --volumes a5595691995bc303a36b8634db6f66e222ef4fc561fca220eef24c6b569f0ac0
+[Pipeline] // withDockerContainer
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Build Docker Image)
+[Pipeline] echo
+Building Docker image...
+[Pipeline] script
+[Pipeline] {
+[Pipeline] isUnix
+[Pipeline] withEnv
+[Pipeline] {
+[Pipeline] sh
++ docker build -t my-app:latest .
+DEPRECATED: The legacy builder is deprecated and will be removed in a future release.
+            Install the buildx component to build images with BuildKit:
+            https://docs.docker.com/go/buildx/
+
+Sending build context to Docker daemon  13.29MB
+
+Step 1/4 : FROM tomcat:9.0.65-jdk11-openjdk
+ ---> e18f03b8c73a
+Step 2/4 : COPY target/webapp-tom.war /usr/local/tomcat/webapps/
+ ---> 58127986e567
+Step 3/4 : EXPOSE 8080
+ ---> Running in e468bfe53b52
+Removing intermediate container e468bfe53b52
+ ---> 06c1d11bb500
+Step 4/4 : CMD ["catalina.sh", "run"]
+ ---> Running in b2bedaa3aafc
+Removing intermediate container b2bedaa3aafc
+ ---> f65eca3d876f
+Successfully built f65eca3d876f
+Successfully tagged my-app:latest
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // script
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Deploy to Remote Server)
+[Pipeline] echo
+Deploying Docker container to remote server...
+[Pipeline] sshagent
+[ssh-agent] Using credentials ubuntu (Doc-server)
+$ ssh-agent
+SSH_AUTH_SOCK=/tmp/ssh-XXXXXXZtcGoQ/agent.10646
+SSH_AGENT_PID=10648
+Running ssh-add (command line suppressed)
+Identity added: /home/ubuntu/jenfolder/workspace/Java Deploy@tmp/private_key_10080141157420841678.key (ubuntu@ip-172-31-1-89)
+[ssh-agent] Started.
+[Pipeline] {
+[Pipeline] sh
++ ssh -o StrictHostKeyChecking=no ubuntu@13.201.85.186 
+                        docker run -d -p 8080:8080 my-app:latest
+                    
+1953fbd91b58b8a70c6639a96778700b8a4cd762a824f273647df2493e7aa239
+[Pipeline] }
+$ ssh-agent -k
+unset SSH_AUTH_SOCK;
+unset SSH_AGENT_PID;
+echo Agent pid 10648 killed;
+[ssh-agent] Stopped.
+[Pipeline] // sshagent
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] stage
+[Pipeline] { (Declarative: Post Actions)
+[Pipeline] echo
+Pipeline completed
+[Pipeline] }
+[Pipeline] // stage
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // withEnv
+[Pipeline] }
+[Pipeline] // node
+[Pipeline] End of Pipeline
+Finished: SUCCESS
