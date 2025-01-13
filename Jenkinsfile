@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
-        REMOTE_HOST = '13.201.85.186'
+        REMOTE_HOST = '172.31.46.213'
         DOCKER_IMAGE = 'my-app:latest'
     }
 
@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub...'
-                git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'
+                git url: 'https://github.com/sriram-nishanth/java_deploy.git', branch: 'main'
             }
         }
 
@@ -40,7 +40,7 @@ pipeline {
                 echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
+                    ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
                         docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
