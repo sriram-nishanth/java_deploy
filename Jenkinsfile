@@ -3,7 +3,7 @@ pipeline {
 
     environment {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
-        REMOTE_HOST = '172.31.37.252'
+        REMOTE_HOST = '172.31.26.195'
         DOCKER_IMAGE = 'my-app:latest'
     }
 
