@@ -41,8 +41,8 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
-                        docker stop my-app || echo "Container not running, skipping stop";
-                        docker rm my-app || echo "Container does not exist, skipping remove";
+                        docker stop my-app:latest || echo "Container not running, skipping stop";
+                        docker rm my-app:latest || echo "Container does not exist, skipping remove";
                         docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
