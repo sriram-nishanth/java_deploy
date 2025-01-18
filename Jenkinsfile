@@ -30,28 +30,18 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    docker.build(env.DOCKER_IMAGE, '.')
+                    docker.build(env.DOCKER_IMAGE)
                 }
             }
         }
 
         stage('Deploy to Remote Server') {
             steps {
-                echo 'Deploying Docker container to remote Amazon Linux server...'
+                echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
-                    ssh -o StrictHostKeyChecking=no ec2-user@${REMOTE_HOST} '
-                        # Ensure Docker is installed
-                        sudo yum update -y
-                        sudo yum install -y docker
-                        sudo systemctl start docker
-                        sudo systemctl enable docker
-                        
-                        # Deploy Docker container
-                        docker pull ${env.DOCKER_IMAGE} || echo "Image not found, skipping pull";
-                        docker stop my-app || echo "Container not running, skipping stop";
-                        docker rm my-app || echo "Container does not exist, skipping remove";
-                        docker run -d --name my-app -p 8080:8080 ${env.DOCKER_IMAGE}
+                    ssh -o StrictHostKeyChecking=no ubuntu@${REMOTE_HOST} '
+                        docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
                 }
@@ -62,9 +52,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed'
-        }
-        failure {
-            echo 'Pipeline failed'
         }
     }
 }
