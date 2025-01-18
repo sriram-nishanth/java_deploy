@@ -5,6 +5,8 @@ pipeline {
         REMOTE_SSH_CREDENTIALS_ID = 'Slave1'
         REMOTE_HOST = '172.31.18.114'
         DOCKER_IMAGE = 'my-app:latest'
+        CONTAINER_NAME = 'my-app'
+        APP_PORT = '8080'
     }
 
     stages {
@@ -41,8 +43,8 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
-                        docker stop ${env.DOCKER_IMAGE} || echo "Container not running, skipping stop";
-                        docker rm ${env.DOCKER_IMAGE} || echo "Container does not exist, skipping remove";
+                        docker stop ${env.CONTAINER_NAME} || echo "Container not running, skipping stop";
+                        docker rm ${env.CONTAINER_NAME} || echo "Container does not exist, skipping remove";
                         docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
