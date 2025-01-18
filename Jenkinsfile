@@ -20,7 +20,6 @@ pipeline {
                 echo 'Building the project with Maven inside Docker...'
                 script {
                     docker.image('maven:3.8.3-openjdk-17').inside {
-                        sh 'docker pull maven:3.8.3-openjdk-17'
                         sh 'mvn clean package'
                     }
                 }
