@@ -45,7 +45,7 @@ pipeline {
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
                         docker stop ${env.CONTAINER_NAME} || echo "Container not running, skipping stop";
                         docker rm ${env.CONTAINER_NAME} || echo "Container does not exist, skipping remove";
-                        docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
+                        docker run -d --name ${env.CONTAINER_NAME} -p ${env.APP_PORT}:${env.APP_PORT} ${env.DOCKER_IMAGE}
                     '
                     """
                 }
