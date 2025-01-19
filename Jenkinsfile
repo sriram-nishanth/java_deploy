@@ -46,6 +46,8 @@ pipeline {
                 echo 'Building Docker image...'
                 script {
                     docker.build(env.DOCKER_IMAGE)
+                    sh 'docker tag my-app:latest 172.31.17.62:5000/my-app:latest'
+                    sh 'docker push 172.31.17.62:5000/my-app:latest'
                 }
             }
         }
@@ -56,10 +58,13 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
-                        docker pull ${env.DOCKER_IMAGE} &&
-                        docker stop my-app || true &&
-                        docker rm my-app || true &&
-                        docker run -d --name my-app -p 8080:8080 ${env.DOCKER_IMAGE}
+                        if docker pull 172.31.17.62:5000/my-app:latest; then
+                            docker stop my-app || true &&
+                            docker rm my-app || true &&
+                            docker run -d --name my-app -p 8080:8080 172.31.17.62:5000/my-app:latest
+                        else
+                            echo "Docker image not found"
+                        fi
                     '
                     """
                 }
