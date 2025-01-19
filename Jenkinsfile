@@ -11,7 +11,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 echo 'Checking out code from GitHub...'
-                git url: 'https://github.com/dineshkrish1607/java_deploy.git', branch: 'main'
+                git url: 'https://github.com/sriram-nishanth/java_deploy.git', branch: 'main'
             }
         }
 
