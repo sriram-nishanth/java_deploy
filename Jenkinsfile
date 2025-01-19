@@ -7,6 +7,10 @@ pipeline {
         DOCKER_IMAGE = 'my-app:latest'
     }
 
+    triggers {
+        githubPush() // Automatically triggers the pipeline on a GitHub push event
+    }
+
     stages {
         stage('Checkout') {
             steps {
@@ -21,6 +25,17 @@ pipeline {
                 script {
                     docker.image('maven:3.8.3-openjdk-17').inside {
                         sh 'mvn clean package'
+                    }
+                }
+            }
+        }
+
+        stage('Test') {
+            steps {
+                echo 'Running tests...'
+                script {
+                    docker.image('maven:3.8.3-openjdk-17').inside {
+                        sh 'mvn test'
                     }
                 }
             }
@@ -41,7 +56,10 @@ pipeline {
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
-                        docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
+                        docker pull ${env.DOCKER_IMAGE} &&
+                        docker stop my-app || true &&
+                        docker rm my-app || true &&
+                        docker run -d --name my-app -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
                 }
@@ -52,6 +70,12 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed'
+        }
+        success {
+            echo 'Deployment was successful!'
+        }
+        failure {
+            echo 'Deployment failed. Please check the Jenkins logs for more details.'
         }
     }
 }
