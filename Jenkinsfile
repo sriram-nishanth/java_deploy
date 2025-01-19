@@ -40,7 +40,7 @@ pipeline {
                 echo 'Running tests inside Docker container...'
                 script {
                     docker.image(env.DOCKER_IMAGE).inside {
-                        sh 'mvn test'
+                        sh 'mvn clean package'
                     }
                 }
             }
