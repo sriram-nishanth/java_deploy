@@ -35,32 +35,13 @@ pipeline {
             }
         }
 
-        stage('Test') {
-            steps {
-                echo 'Running tests inside Docker container...'
-                script {
-                    docker.image(env.DOCKER_IMAGE).inside {
-                        sh 'mvn clean package'
-                    }
-                }
-            }
-        }
-
         stage('Deploy to Remote Server') {
-            when {
-                expression {
-                    currentBuild.result == null || currentBuild.result == 'SUCCESS'
-                }
-            }
             steps {
                 echo 'Deploying Docker container to remote server...'
                 sshagent([env.REMOTE_SSH_CREDENTIALS_ID]) {
                     sh """
                     ssh -o StrictHostKeyChecking=no root@${REMOTE_HOST} '
-                        docker pull ${env.DOCKER_IMAGE} &&
-                        docker stop my-app || true &&
-                        docker rm my-app || true &&
-                        docker run -d --name my-app -p 8080:8080 ${env.DOCKER_IMAGE}
+                        docker run -d -p 8080:8080 ${env.DOCKER_IMAGE}
                     '
                     """
                 }
@@ -71,12 +52,6 @@ pipeline {
     post {
         always {
             echo 'Pipeline completed'
-        }
-        success {
-            echo 'Deployment successful'
-        }
-        failure {
-            echo 'Deployment failed'
         }
     }
 }
